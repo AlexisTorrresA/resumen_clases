@@ -7,6 +7,7 @@
 <title>Máster IA · Study Hub</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="/static/styles.css">
+<link rel="stylesheet" href="/static/study-plus.css">
 <script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/dist/vis-network.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
@@ -16,22 +17,20 @@
   <div><strong>Máster IA</strong><span class="muted"> · Study Hub</span></div>
   <button id="themeBtn" class="iconbtn" aria-label="Tema">◐</button>
 </header>
-
 <div class="layout">
 <aside id="sidebar" class="sidebar">
-  <div class="brand"><div class="logo">AI</div><div><b>Centro de estudio</b><small>UNIR · Exámenes</small></div></div>
+  <div class="brand"><div class="logo">AI</div><div><b>Centro de estudio</b><small>Máster IA · Repaso</small></div></div>
   <input id="globalSearch" class="search" placeholder="Buscar concepto, tema...">
   <nav id="subjectNav"></nav>
-  <div class="sidefooter">Progreso, intentos y material sincronizados con PostgreSQL del Y700 cuando está disponible.</div>
+  <div class="sidefooter">Progreso, intentos y material de estudio sincronizados con PostgreSQL del Y700 cuando está disponible.</div>
 </aside>
-
 <main class="main">
   <section id="homeView" class="view active">
     <div class="hero">
       <div>
-        <span class="eyebrow">REPASO PARA EXÁMENES</span>
-        <h1>Todo el máster, organizado para estudiar rápido.</h1>
-        <p>Resumen por asignatura y tema, mapa conceptual, conceptos clave y simulacros corregidos con explicación.</p>
+        <span class="eyebrow">REPASO Y PRÁCTICA</span>
+        <h1>Entiende, conecta y practica cada tema.</h1>
+        <p>Explicaciones por asignatura, conceptos esenciales, ejemplos, código, mapas conceptuales y ejercicios corregidos paso a paso.</p>
       </div>
       <div class="heroStat"><b id="totalTopics">60</b><span>temas organizados</span></div>
     </div>
@@ -41,37 +40,33 @@
       <canvas id="progressChart" height="120"></canvas>
     </section>
   </section>
-
   <section id="subjectView" class="view">
     <button class="back" id="backHome">← Asignaturas</button>
     <div class="subjectHero">
       <div><span class="eyebrow">ASIGNATURA</span><h1 id="subjectTitle"></h1><p id="subjectMeta"></p></div>
-      <button id="startExam" class="primary">Practicar examen</button>
+      <button id="startExam" class="primary">Practicar</button>
     </div>
     <div class="tabs">
       <button data-tab="topics" class="tab active">Temas</button>
       <button data-tab="summary" class="tab">Resumen global</button>
-      <button data-tab="map" class="tab">Mapa</button>
-      <button data-tab="exams" class="tab">Exámenes</button>
+      <button data-tab="map" class="tab">Mapa conceptual</button>
+      <button data-tab="exams" class="tab">Práctica</button>
     </div>
     <div id="topicsTab" class="tabpane active"><div id="topicList" class="topic-list"></div></div>
     <div id="summaryTab" class="tabpane"></div>
     <div id="mapTab" class="tabpane"><div id="conceptMap"></div></div>
     <div id="examsTab" class="tabpane"></div>
   </section>
-
   <section id="topicView" class="view">
     <button class="back" id="backSubject">← Volver a la asignatura</button>
     <article id="topicArticle"></article>
   </section>
-
   <section id="examView" class="view">
     <button class="back" id="backFromExam">← Volver</button>
-    <div class="examHead"><div><span class="eyebrow">SIMULACRO</span><h1 id="examTitle"></h1></div><div id="examScore" class="score">0 / 0</div></div>
+    <div class="examHead"><div><span class="eyebrow">PRÁCTICA</span><h1 id="examTitle"></h1></div><div id="examScore" class="score">0 / 0</div></div>
     <div class="examProgress"><div id="examBar"></div></div>
     <div id="questionCard" class="question-card"></div>
   </section>
-
   <section id="searchView" class="view">
     <button class="back" id="backFromSearch">← Inicio</button>
     <h1>Resultados de búsqueda</h1>
@@ -79,7 +74,6 @@
   </section>
 </main>
 </div>
-
 <nav class="mobileNav">
 <button data-mobile="home">⌂<span>Inicio</span></button>
 <button data-mobile="subjects">▦<span>Asignaturas</span></button>
@@ -91,7 +85,18 @@
 <script src="/static/igpia.js"></script>
 <script src="/static/rpa.js"></script>
 <script src="/static/questions.js"></script>
-<script src="/static/questions-extra.js"></script>
+<script src="/static/questions-pln.js"></script>
+<script src="/static/questions-taa.js"></script>
+<script src="/static/questions-va.js"></script>
+<script src="/static/questions-igpia.js"></script>
+<script src="/static/questions-rpa.js"></script>
 <script src="/static/app.js"></script>
+<script src="/static/glossary-pln.js"></script>
+<script src="/static/glossary-taa.js"></script>
+<script src="/static/glossary-va.js"></script>
+<script src="/static/glossary-igpia.js"></script>
+<script src="/static/glossary-rpa.js"></script>
+<script src="/static/study-code.js"></script>
+<script src="/static/study-plus.js"></script>
 <script src="/static/catalog-sync.js"></script>
 </body></html>

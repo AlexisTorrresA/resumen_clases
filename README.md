@@ -1,37 +1,24 @@
-# Resumen de Clases · Máster IA
+# Resumen Máster IA
 
-Sitio de estudio interactivo para organizar asignaturas del Máster en IA por curso y clase.
+Centro de estudio responsive para las asignaturas del Máster en IA.
 
-## Primera asignatura
+Incluye:
+- Procesamiento del Lenguaje Natural.
+- Visión Artificial.
+- Técnicas de Aprendizaje Automático.
+- Investigación y Gestión de Proyectos en IA.
+- Razonamiento y Planificación Automática.
+- 60 temas resumidos con foco de examen.
+- Mapas conceptuales interactivos.
+- Banco de preguntas corregible con explicación.
+- Seguimiento de progreso e intentos mediante PostgreSQL administrado por Y700.
 
-**Procesamiento del Lenguaje Natural**: 10 temas resumidos desde el material oficial aportado, con:
+## Despliegue Y700
 
-- resumen por clase;
-- conceptos imprescindibles;
-- fechas y ejemplos relevantes;
-- trampas típicas de examen;
-- preguntas rápidas con respuesta;
-- resumen global de la asignatura;
-- ruta de estudio;
-- mapa conceptual interactivo;
-- buscador global y progreso local.
+El repositorio respeta `y700-app-starter`: `linux/amd64`, runtime `10001:10001`, `/health`, sin puertos del host y PostgreSQL declarado en `y700.deploy.yml`.
 
-## Desarrollo local
+URL esperada:
 
-```bash
-pip install -r requirements.txt httpx pytest
-PYTHONPATH=. pytest -q
-uvicorn app.main:app --host 0.0.0.0 --port 8000
-```
+`https://resumen-clases.alexistorreslabs.com`
 
-## Y700
-
-Este repositorio sigue el contrato de `y700-app-starter`:
-
-- imagen `ghcr.io/alexistorrresa/resumen-clases:main`;
-- runtime no-root `10001:10001`;
-- healthcheck en `/health`;
-- sin puertos publicados al host;
-- despliegue público esperado en `https://resumen-clases.alexistorreslabs.com`.
-
-Cada `push` a `main` ejecuta tests y publica la imagen `linux/amd64` en GHCR. El Y700 Deployment Manager se encarga de reconciliar el contenedor y Caddy.
+Los documentos originales del campus/exámenes no se publican en el repositorio; se guardan solo resúmenes y ejercicios derivados.

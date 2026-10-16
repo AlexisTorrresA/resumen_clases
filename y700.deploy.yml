@@ -16,11 +16,11 @@ public:
 healthcheck:
   path: /health
 database:
-  postgres: false
+  postgres: true
   name: resumen_clases
 secrets:
   required: []
   optional: []
 resources:
-  memory: 384m
-  cpus: 0.5
+  memory: 512m
+  cpus: 0.75

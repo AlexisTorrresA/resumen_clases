@@ -1,0 +1,10 @@
+# Material privado: nunca versionar documentos originales
+material_privado/
+private_materials/
+originales/
+examenes_originales/
+
+# Archivos locales
+__pycache__/
+.pytest_cache/
+.env

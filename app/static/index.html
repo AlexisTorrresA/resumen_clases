@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b1020" />
+  <title>Máster IA · Resumen de clases</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><div class="brand-mark">AI</div><div><strong>Máster IA</strong><span>Study Hub</span></div></div>
+      <div class="course-pill">PLN · 10 clases</div>
+      <nav id="topicNav"></nav>
+      <div class="side-footer"><span id="progressText">0/10 repasadas</span><div class="progress"><i id="progressBar"></i></div></div>
+    </aside>
+    <main>
+      <header class="topbar">
+        <button class="icon-btn mobile" id="menuBtn">☰</button>
+        <div class="search-wrap">⌕ <input id="search" placeholder="Buscar concepto, ejemplo, algoritmo…" /></div>
+        <button class="mode-btn" id="focusBtn">Modo repaso</button>
+      </header>
+      <section class="hero" id="overview">
+        <div class="hero-copy">
+          <div class="eyebrow">PRIMERA ASIGNATURA</div>
+          <h1>Procesamiento del<br><span>Lenguaje Natural</span></h1>
+          <p>Resumen estructurado de los 10 temas oficiales, optimizado para estudiar y preparar el examen.</p>
+          <div class="hero-actions"><button class="primary" data-jump="1">Empezar Tema 1</button><button class="ghost" data-panel="map">Ver mapa conceptual</button></div>
+        </div>
+        <div class="hero-card"><span>Resumen de los resúmenes</span><ul id="examSummary"></ul></div>
+      </section>
+
+      <section class="stats">
+        <div><strong>10</strong><span>Temas</span></div><div><strong>60+</strong><span>Conceptos clave</span></div><div><strong>30</strong><span>Preguntas rápidas</span></div><div><strong>1</strong><span>Mapa global</span></div>
+      </section>
+
+      <section class="tabs">
+        <button class="tab active" data-panel="classes">Clases</button>
+        <button class="tab" data-panel="route">Ruta de estudio</button>
+        <button class="tab" data-panel="map">Mapa conceptual</button>
+      </section>
+
+      <section id="classes" class="panel active">
+        <div class="section-heading"><div><span>Curso</span><h2>Clases y resúmenes</h2></div><p>Abre una clase para ver solo lo esencial, con foco en preguntas de examen.</p></div>
+        <div id="topicCards" class="cards"></div>
+      </section>
+
+      <section id="route" class="panel">
+        <div class="section-heading"><div><span>Estrategia</span><h2>Ruta de estudio recomendada</h2></div><p>Orden pensado para conectar conceptos y reducir memorización aislada.</p></div>
+        <div id="studyRoute" class="route"></div>
+        <div class="big-summary"><h3>La asignatura en una frase</h3><p><b>Texto</b> → normalización → <b>etiquetas</b> → estructura <b>sintáctica</b> → <b>significado</b> → modelos <b>estadísticos/neuronales</b> → <b>aplicaciones y diálogo</b>.</p></div>
+      </section>
+
+      <section id="map" class="panel">
+        <div class="section-heading"><div><span>Visión global</span><h2>Mapa conceptual interactivo</h2></div><p>Arrastra, acerca y selecciona nodos para visualizar cómo se conectan los temas.</p></div>
+        <div id="network"></div>
+      </section>
+
+      <section id="topicDetail" class="detail hidden"></section>
+      <footer>Resumen generado a partir del material oficial proporcionado para estudio personal · Máster IA</footer>
+    </main>
+  </div>
+  <script src="/static/data.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

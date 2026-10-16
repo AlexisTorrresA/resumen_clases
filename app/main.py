@@ -61,6 +61,15 @@ def init_db():
                         PRIMARY KEY(profile_id, subject_id, topic_number)
                     )
                 """)
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS study_material (
+                        subject_id TEXT PRIMARY KEY,
+                        title TEXT NOT NULL,
+                        material JSONB NOT NULL,
+                        questions JSONB NOT NULL DEFAULT '[]'::jsonb,
+                        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                    )
+                """)
         return True
     finally:
         conn.close()
@@ -88,6 +97,11 @@ class Progress(BaseModel):
     subject_id: str
     topic_number: int
     done: bool = True
+
+
+class CatalogSync(BaseModel):
+    courses: list[dict]
+    questions: dict[str, list[dict]] = {}
 
 
 @app.get("/health")
@@ -152,6 +166,50 @@ def save_progress(item: Progress):
                     (item.profile_id, item.subject_id, item.topic_number, item.done),
                 )
         return {"saved": True, "database": True}
+    finally:
+        conn.close()
+
+
+@app.post("/api/catalog/sync")
+def sync_catalog(item: CatalogSync):
+    """Persist the versioned study material in the Y700 PostgreSQL database.
+
+    The browser sends the same catalog bundled with the deployed application. This keeps
+    Git as the editable source of truth while PostgreSQL stores a queryable copy together
+    with exam banks, attempts and progress.
+    """
+    conn = get_conn()
+    if conn is None:
+        return {"saved": False, "database": False, "subjects": 0}
+    saved = 0
+    try:
+        with conn:
+            with conn.cursor() as cur:
+                for course in item.courses:
+                    subject_id = str(course.get("id", "")).strip()
+                    title = str(course.get("title", subject_id)).strip()
+                    if not subject_id:
+                        continue
+                    cur.execute(
+                        """
+                        INSERT INTO study_material(subject_id, title, material, questions)
+                        VALUES (%s, %s, %s::jsonb, %s::jsonb)
+                        ON CONFLICT(subject_id)
+                        DO UPDATE SET
+                            title=EXCLUDED.title,
+                            material=EXCLUDED.material,
+                            questions=EXCLUDED.questions,
+                            updated_at=NOW()
+                        """,
+                        (
+                            subject_id,
+                            title,
+                            json.dumps(course, ensure_ascii=False),
+                            json.dumps(item.questions.get(subject_id, []), ensure_ascii=False),
+                        ),
+                    )
+                    saved += 1
+        return {"saved": True, "database": True, "subjects": saved}
     finally:
         conn.close()
 

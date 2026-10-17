@@ -20,7 +20,9 @@ database:
   name: resumen_clases
 secrets:
   required: []
-  optional: []
+  optional:
+    - OPENAI_API_KEY
+    - OPENAI_MODEL
 resources:
   memory: 512m
   cpus: 0.75

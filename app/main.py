@@ -12,11 +12,14 @@ try:
 except ImportError:  # CI/local can still serve the static study site
     psycopg = None
 
+from app.ai_grading import router as ai_router
+
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 
 app = FastAPI(title="Resumen Máster IA", docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.include_router(ai_router)
 
 
 def database_url():
@@ -48,9 +51,11 @@ def init_db():
                         question_index INTEGER NOT NULL,
                         score NUMERIC NOT NULL,
                         answer JSONB,
+                        feedback JSONB,
                         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
                     )
                 """)
+                cur.execute("ALTER TABLE attempts ADD COLUMN IF NOT EXISTS feedback JSONB")
                 cur.execute("""
                     CREATE TABLE IF NOT EXISTS progress (
                         profile_id TEXT NOT NULL,
@@ -90,6 +95,7 @@ class Attempt(BaseModel):
     question_index: int
     score: float
     answer: object | None = None
+    feedback: object | None = None
 
 
 class Progress(BaseModel):
@@ -132,8 +138,8 @@ def save_attempt(item: Attempt):
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    INSERT INTO attempts(profile_id, subject_id, question_index, score, answer)
-                    VALUES (%s, %s, %s, %s, %s::jsonb)
+                    INSERT INTO attempts(profile_id, subject_id, question_index, score, answer, feedback)
+                    VALUES (%s, %s, %s, %s, %s::jsonb, %s::jsonb)
                     """,
                     (
                         item.profile_id,
@@ -141,6 +147,7 @@ def save_attempt(item: Attempt):
                         item.question_index,
                         item.score,
                         json.dumps(item.answer, ensure_ascii=False),
+                        json.dumps(item.feedback, ensure_ascii=False),
                     ),
                 )
         return {"saved": True, "database": True}

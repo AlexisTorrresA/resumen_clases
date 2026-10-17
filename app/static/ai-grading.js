@@ -2,9 +2,20 @@
   if (typeof checkAnswer !== 'function') return;
 
   const previousCheckAnswer = checkAnswer;
+  const previousRenderQuestion = typeof renderQuestion === 'function' ? renderQuestion : null;
   const h = (v) => String(v ?? '').replace(/[&<>"']/g, m => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[m]));
+
+  if (previousRenderQuestion) {
+    renderQuestion = function(){
+      previousRenderQuestion();
+      const input = document.querySelector('#openAnswer');
+      if (input && !document.querySelector('.ai-open-note')) {
+        input.insertAdjacentHTML('afterend','<div class="ai-open-note"><span>✦</span><div><b>Corrección semántica con IA</b><small>Evalúa si entendiste el concepto aunque no uses exactamente las mismas palabras.</small></div></div>');
+      }
+    };
+  }
 
   function localFallback(q, answer) {
     const normalized = answer.toLowerCase();
@@ -60,7 +71,6 @@
 
     const button = document.querySelector('#checkButton');
     const feedback = document.querySelector('#feedback');
-    const originalButton = button?.textContent || 'Corregir';
     if (button) {
       button.disabled = true;
       button.textContent = 'Corrigiendo con IA…';

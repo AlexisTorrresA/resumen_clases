@@ -1,0 +1,19 @@
+{
+  "name": "Máster IA · Study Hub",
+  "short_name": "Máster IA",
+  "description": "Centro de estudio del Máster en Inteligencia Artificial",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/static/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

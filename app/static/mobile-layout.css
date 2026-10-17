@@ -1,0 +1,212 @@
+/* Mobile layout hardening: no page-level horizontal overflow.
+   Wide content (maps, code, matrices) scrolls inside its own container only. */
+@media (max-width:900px){
+  html,body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+  }
+
+  body{
+    position:relative;
+    -webkit-text-size-adjust:100%;
+    text-size-adjust:100%;
+  }
+
+  .layout,.main,.view,#topicArticle,
+  .study-layout,.study-layout>main,.study-layout>aside,
+  .studySection,.articleHero,.subjectHero,.hero,
+  .panel,.subject-card,.topic-card,.question-card,
+  .exam-intro-grid,.summaryGrid,.must-grid,.term-grid,
+  .worked-example,.bridge-card,.topic-pagination{
+    min-width:0;
+    width:100%;
+    max-width:100%;
+  }
+
+  .layout{overflow:visible}
+  .main{
+    margin:0;
+    padding:16px 12px calc(86px + env(safe-area-inset-bottom));
+  }
+
+  .view{overflow:visible}
+
+  .study-layout{
+    grid-template-columns:minmax(0,1fr);
+    gap:14px;
+  }
+  .study-layout>main,.study-layout>aside{overflow:visible}
+
+  .studySection{
+    padding:17px;
+    overflow:hidden;
+  }
+
+  .studySection h1,.studySection h2,.studySection h3,
+  .articleHero h1,.subjectHero h1,.hero h1,
+  .studySection p,.articleHero p,.subjectHero p,.hero p,
+  .must-card p,.term-card p,.worked-example p,
+  .topic-card h3,.topic-card p,.question-card h2,
+  .option span,.feedback,.bridge-card p,.topic-nav-btn b{
+    max-width:100%;
+    overflow-wrap:break-word;
+    word-break:normal;
+    hyphens:auto;
+  }
+
+  .articleHero,.study-hero{
+    padding:20px 17px;
+  }
+  .articleHero h1,.study-hero h1{
+    font-size:clamp(25px,7vw,34px);
+    line-height:1.12;
+  }
+  .lead-copy{font-size:16px;line-height:1.62}
+  .studySection p{line-height:1.58}
+
+  .must-grid,.term-grid,.exam-intro-grid,.summaryGrid{
+    grid-template-columns:minmax(0,1fr);
+  }
+  .must-card,.term-card{min-width:0;max-width:100%}
+  .must-card{align-items:flex-start}
+  .must-card>span{flex:0 0 auto}
+  .must-card p{min-width:0;flex:1}
+
+  .worked-example{align-items:flex-start}
+  .worked-example>div:last-child{min-width:0;flex:1}
+
+  .topic-card{
+    grid-template-columns:40px minmax(0,1fr);
+    gap:11px;
+    padding:15px;
+  }
+  .topic-actions{
+    grid-column:1/-1;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    width:100%;
+  }
+  .studybtn,.donebtn{min-width:0;width:100%}
+
+  .tabs{
+    width:100%;
+    max-width:100%;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .tabs::-webkit-scrollbar{display:none}
+
+  /* Only these areas are allowed to scroll horizontally. */
+  .topic-map-shell,.topic-map-scroll,
+  .code-section,.code-section pre,
+  .matrix-demo,.table-scroll,.networkMap,#conceptMap{
+    min-width:0;
+    max-width:100%;
+  }
+  .topic-map-shell{width:100%;overflow:hidden}
+  .topic-map-scroll{
+    width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;
+  }
+  .topic-map-svg{width:820px;max-width:none;min-width:820px}
+
+  .code-section pre{
+    width:100%;
+    overflow-x:auto;
+    white-space:pre;
+    -webkit-overflow-scrolling:touch;
+  }
+  .code-section code{word-break:normal;overflow-wrap:normal}
+  .codebar{max-width:100%}
+
+  .matrix-demo{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .metric-grid label,.metric-grid input{min-width:0;max-width:100%}
+
+  .demo-row{min-width:0;max-width:100%}
+  .demo-row input{min-width:0;max-width:100%}
+
+  .topic-pagination{grid-template-columns:minmax(0,1fr)}
+  .topic-nav-btn,.topic-nav-btn.next{
+    min-width:0;
+    width:100%;
+    align-items:flex-start;
+    text-align:left;
+  }
+
+  .map-toolbar{
+    min-width:0;
+    max-width:100%;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .networkMap{width:100%;height:480px;overflow:hidden}
+
+  .question-card,.option,.feedback,.answerbox{min-width:0;max-width:100%}
+  .option{align-items:flex-start}
+  .option input{flex:0 0 auto;margin-top:3px}
+  .examHead{gap:10px;align-items:flex-start}
+  .examHead>div:first-child{min-width:0;flex:1}
+  .score{white-space:nowrap}
+  .examActions{display:grid;grid-template-columns:1fr 1fr}
+  .examActions button{width:100%;min-width:0}
+
+  .topbar{
+    width:100%;
+    max-width:100%;
+    padding-left:max(12px,env(safe-area-inset-left));
+    padding-right:max(12px,env(safe-area-inset-right));
+  }
+
+  .mobileNav{
+    left:0;
+    right:0;
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    overflow:hidden;
+  }
+  .mobileNav button{min-width:0;max-width:33.333%;overflow:hidden}
+  .mobileNav span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+
+@media (max-width:520px){
+  .main{padding:12px 9px calc(82px + env(safe-area-inset-bottom))}
+  .hero,.subjectHero,.articleHero,.study-hero,.panel,.subject-card,.topic-card,.studySection,.question-card{
+    border-radius:15px;
+  }
+  .hero,.subjectHero{padding:18px 16px}
+  .hero h1,.subjectHero h1{font-size:27px}
+  .studySection{padding:15px 14px}
+  .studySection h2{font-size:23px;line-height:1.18}
+  .section-kicker{font-size:10px;letter-spacing:.12em}
+  .must-card{padding:13px 12px;gap:10px}
+  .term-card{padding:13px 12px}
+  .term-card .term{font-size:18px}
+  .term-card p{font-size:14px;line-height:1.5}
+  .worked-example{padding:12px;gap:10px}
+  .example-icon{width:34px;height:34px;border-radius:10px}
+  .metric-grid{grid-template-columns:minmax(0,1fr)}
+  .examActions{grid-template-columns:minmax(0,1fr)}
+  .question-card{padding:15px 13px}
+  .option{padding:11px 10px}
+  .networkMap{height:430px}
+}
+
+@media (max-width:380px){
+  .main{padding-left:7px;padding-right:7px}
+  .studySection{padding:14px 11px}
+  .articleHero,.study-hero{padding:17px 13px}
+  .topic-actions{grid-template-columns:minmax(0,1fr)}
+}

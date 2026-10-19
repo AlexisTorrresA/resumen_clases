@@ -208,14 +208,13 @@
       $s('#topicFocus').textContent=document.body.classList.contains('study-quiet')?'Salir de enfoque':'Modo enfoque';
     };
     const content=layout.querySelector('main');if(!content)return;
-    const clue=(t.mustKnow?.[0] || t.summary || t.short || t.title);
     const answer=(t.mustKnow||[]).slice(0,3).join(' ') || t.summary || '';
     const recall=document.createElement('section');
     recall.className='studySection study-recall';
     recall.setAttribute('aria-label','Práctica de recuperación activa');
     recall.innerHTML='<span class="study-kicker">PRIMERO RECORDAR, DESPUÉS RELEER</span>'+
       '<h2>¿Puedes explicar este tema sin mirar?</h2>'+
-      '<p>Piensa en <strong>'+escape(t.title)+'</strong>. ¿Cómo funciona y cuándo se utiliza? '+escape(clue)+'</p>'+
+      '<p>Piensa en <strong>'+escape(t.title)+'</strong>. ¿Qué significa, cómo funciona y cuándo se utiliza? Escribe tu explicación sin consultar el resumen.</p>'+
       '<textarea id="studyRecallInput" placeholder="Escribe con tus palabras lo que recuerdas antes de mirar la explicación…" aria-label="Tu explicación de memoria"></textarea>'+
       '<details id="studyRecallAnswer"><summary>Mostrar respuesta orientativa</summary><p class="recall-answer">'+escape(answer)+'</p></details>'+
       '<div class="review-grades"><button data-grade="0">No lo recuerdo</button><button data-grade="1">Tengo dudas</button><button data-grade="2">Lo recuerdo bien</button></div>'+

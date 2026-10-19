@@ -100,3 +100,11 @@ button:disabled{opacity:.6;cursor:not-allowed}
  .study-tool-buttons button{font-size:13px}
 }
 @media(prefers-reduced-motion:reduce){.study-progressline>span,.subject-card{transition:none}}
+
+/* Keep immediate study actions above decorative messaging on small screens. */
+.study-desk + .hero{padding:19px 24px;box-shadow:none;border:1px solid rgba(165,180,252,.22)}
+.study-desk + .hero h1{font-size:clamp(21px,2.5vw,28px);line-height:1.22}
+.study-desk + .hero p{font-size:14px;margin:0}
+.study-desk + .hero .heroStat{padding:13px;min-width:120px}
+.study-desk + .hero .heroStat b{font-size:30px}
+@media(max-width:900px){.study-desk + .hero{display:none}}

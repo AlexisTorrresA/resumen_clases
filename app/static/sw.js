@@ -1,5 +1,5 @@
-const CACHE='master-ia-study-v1';
-const CORE=['/','/static/styles.css','/static/study-plus.css','/static/study-fixes.css','/static/mobile-menu.css','/static/ai-grading.css','/static/icon.svg'];
+const CACHE='master-ia-study-v2';
+const CORE=['/','/static/styles.css','/static/study-plus.css','/static/study-fixes.css','/static/mobile-menu.css','/static/ai-grading.css','/static/icon.svg','/static/study-workspace.css','/static/study-workspace.js'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',event=>{

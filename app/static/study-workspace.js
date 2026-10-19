@@ -14,14 +14,14 @@
     const d = new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate()+days);
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   };
-  const empty = () => ({version:1,updatedAt:0,visited:null,notes:{},bookmarks:{},reviews:{},mistakes:{}});
+  const empty = () => ({version:1,updatedAt:0,visited:null,notes:{},bookmarks:{},reviews:{},mistakes:{},completed:{}});
   const sanitize = (s) => {
     const out=empty();
     if (!s || typeof s !== 'object' || Array.isArray(s)) return out;
     out.updatedAt = Number(s.updatedAt) || 0;
     out.visited = s.visited && typeof s.visited.sid==='string' && Number.isInteger(Number(s.visited.n))
       ? {sid:s.visited.sid,n:Number(s.visited.n)} : null;
-    for (const field of ['notes','bookmarks','reviews','mistakes']) {
+    for (const field of ['notes','bookmarks','reviews','mistakes','completed']) {
       const value=s[field];
       if(value && typeof value==='object' && !Array.isArray(value)) out[field]=value;
     }
@@ -29,6 +29,7 @@
   };
   let saved;
   try { saved = sanitize(JSON.parse(localStorage.getItem(key)||'{}')); } catch (_) { saved=empty(); }
+  Object.entries(saved.completed).forEach(([k,v])=>{state.progress[k]=!!v;});
   let pending=null;
   function store() {
     saved.updatedAt=Date.now();
@@ -46,6 +47,7 @@
       const body=await res.json();
       if (body.data && Number(body.data.updatedAt)>saved.updatedAt) {
         saved=sanitize(body.data);
+        Object.entries(saved.completed).forEach(([k,v])=>{state.progress[k]=!!v;});
         try{localStorage.setItem(key,JSON.stringify(saved));}catch(_){}
         refreshDashboard();
         if ($s('#subjectView.active')) enhanceSubject();
@@ -169,6 +171,7 @@
     if(grade===2) interval=Math.max(7,Math.min(60,(Number(prev.interval)||0)*2 || 7));
     saved.reviews[k]={repetitions:attempts,interval:interval,due:datePlus(interval),lastReviewed:today(),grade:grade};
     state.progress[k]=true;
+    saved.completed[k]=true;
     store();
     fetch('/api/progress',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({profile_id:profile,subject_id:sid,topic_number:n,done:true})}).catch(()=>{});
@@ -331,6 +334,20 @@
     store();
     topicPanel(state.subjectId,state.topic);
     refreshDashboard();
+  };
+  const previousMarkTopic=markTopic;
+  markTopic=async function(n){
+    const sid=state.subjectId;
+    const result=await previousMarkTopic(n);
+    if(sid){saved.completed[reviewKey(sid,n)]=true;store();refreshDashboard();}
+    return result;
+  };
+  const previousToggleDone=toggleDone;
+  toggleDone=async function(event,n){
+    const sid=state.subjectId;
+    const result=await previousToggleDone(event,n);
+    if(sid){saved.completed[reviewKey(sid,n)]=!!state.progress[reviewKey(sid,n)];store();refreshDashboard();enhanceSubject();}
+    return result;
   };
   const previousCheck=checkAnswer;
   checkAnswer=async function(idx) {

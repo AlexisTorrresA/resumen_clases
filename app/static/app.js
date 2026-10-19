@@ -26,6 +26,7 @@ function renderHome(){
 }
 let chart;
 function renderChart(){
+ if(typeof Chart==='undefined'){ const canvas=$('#progressChart'); if(canvas)canvas.style.display='none';return; }
  if(chart)chart.destroy();
  chart=new Chart($('#progressChart'),{type:'bar',data:{labels:COURSES.map(s=>s.short),datasets:[{label:'Temas repasados',data:COURSES.map(s=>Object.entries(state.progress).filter(([k,v])=>v&&k.startsWith(s.id+':')).length),borderWidth:1}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
 }

@@ -32,3 +32,25 @@ def test_stats_without_database():
     r = client.get("/api/stats/test")
     assert r.status_code == 200
     assert "attempts" in r.json()
+
+
+def test_study_state_fallback():
+    r = client.get("/api/study-state/test-profile")
+    assert r.status_code == 200
+    assert "data" in r.json()
+    p = client.post("/api/study-state", json={"profile_id": "test-profile", "data": {"notes": {"pln:1": "recuerdo"}}})
+    assert p.status_code == 200
+    assert "saved" in p.json()
+
+
+def test_study_state_rejects_large_payload():
+    r = client.post("/api/study-state", json={"profile_id": "test-profile", "data": {"text": "a" * 1500100}})
+    assert r.status_code == 413
+
+
+def test_home_loads_study_workspace():
+    r = client.get("/")
+    assert r.status_code == 200
+    assert "study-workspace.js" in r.text
+    assert "study-workspace.css" in r.text
+    assert client.get("/static/study-workspace.js").status_code == 200

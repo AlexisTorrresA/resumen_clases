@@ -14,14 +14,14 @@
     const d = new Date(); d.setHours(12,0,0,0); d.setDate(d.getDate()+days);
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   };
-  const empty = () => ({version:1,updatedAt:0,visited:null,notes:{},bookmarks:{},reviews:{},mistakes:{},completed:{}});
+  const empty = () => ({version:1,updatedAt:0,visited:null,notes:{},bookmarks:{},reviews:{},mistakes:{},completed:{},examDates:{}});
   const sanitize = (s) => {
     const out=empty();
     if (!s || typeof s !== 'object' || Array.isArray(s)) return out;
     out.updatedAt = Number(s.updatedAt) || 0;
     out.visited = s.visited && typeof s.visited.sid==='string' && Number.isInteger(Number(s.visited.n))
       ? {sid:s.visited.sid,n:Number(s.visited.n)} : null;
-    for (const field of ['notes','bookmarks','reviews','mistakes','completed']) {
+    for (const field of ['notes','bookmarks','reviews','mistakes','completed','examDates']) {
       const value=s[field];
       if(value && typeof value==='object' && !Array.isArray(value)) out[field]=value;
     }
@@ -89,6 +89,7 @@
     const reviewed=Object.keys(saved.reviews).length;
     const completed=allCompleted(), percent=Math.round(completed/Math.max(1,totalTopics)*100);
     const pending=due().length;
+    const upcoming=Object.entries(saved.examDates).filter(([sid,date])=>findCourse(sid) && typeof date==='string' && /^\d{4}-\d{2}-\d{2}$/.test(date) && date>=today()).sort((a,b)=>a[1].localeCompare(b[1]))[0];
     let last=saved.visited;
     if(!last || !findTopic(last.sid,last.n)) last={sid:COURSES[0].id,n:COURSES[0].topics[0].n};
     const t=findTopic(last.sid,last.n);
@@ -104,7 +105,8 @@
       '<div class="study-stat"><b>'+reviewed+'</b><span>En repaso</span></div>'+
       '<div class="study-stat"><b>'+pending+'</b><span>Repasos para hoy</span></div></div>'+
       '<div class="study-progressline" role="progressbar" aria-label="Temas marcados como repasados" aria-valuenow="'+percent+'" aria-valuemin="0" aria-valuemax="100"><span style="width:'+percent+'%"></span></div>'+
-      '<small class="study-subhead">'+percent+' % del material marcado como repasado (no equivale a dominarlo).</small>'+
+      '<small class="study-subhead">'+percent+' % del material marcado como repasado (no equivale a dominarlo).</small>'+ 
+      (upcoming?'<p class="study-exam-next">Próximo examen: <b>'+escape(labelFor(upcoming[0]))+'</b> · '+escape(upcoming[1])+'</p>':'<p class="study-exam-next">Puedes configurar las fechas de examen dentro de cada asignatura.</p>')+
       '<div class="study-actions"><input id="studyQuickSearch" type="search" aria-label="Buscar temas" placeholder="Buscar un concepto o tema…" class="search" style="margin:6px 0 0;flex:1 1 220px">'+
       '<button id="studyExport" class="study-action" type="button">Guardar copia</button>'+
       '<button id="studyImport" class="study-action" type="button">Restaurar copia</button></div>';
@@ -141,8 +143,9 @@
     const pending=due().filter(x=>x.sid===subject.id).length;
     panel.innerHTML='<div><strong>'+done+' de '+subject.topics.length+' temas marcados como vistos</strong>'+
       '<small>'+pending+' repaso(s) pendiente(s). Recuerda intentar responder antes de consultar las soluciones.</small></div>'+
-      '<div class="study-actions" style="margin:0"><button class="study-action" id="subjectReviewNow">Repasar</button>'+
+      '<div class="study-actions" style="margin:0"><label class="study-date">Fecha de examen <input id="subjectExamDate" type="date" value="'+escape(saved.examDates[subject.id]||'')+'" aria-label="Fecha de examen de '+escape(subject.short)+'"></label><button class="study-action" id="subjectReviewNow">Repasar</button>'+ 
       '<button class="study-action primary-action" id="subjectNextTopic">Seguir temario →</button></div>';
+    $s('#subjectExamDate').onchange=(event)=>{const val=event.target.value;if(val)saved.examDates[subject.id]=val;else delete saved.examDates[subject.id];store();refreshDashboard();};
     $s('#subjectReviewNow').onclick=showReview;
     $s('#subjectNextTopic').onclick=()=>{const t=nextTopic(subject.id);if(t)goTopic(subject.id,t.n);};
     document.querySelectorAll('#topicList .topic-card').forEach((card,i)=>{

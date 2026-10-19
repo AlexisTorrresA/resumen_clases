@@ -322,6 +322,23 @@
     finally{fileInput.value='';}
   });
 
+  const previousRenderMap=renderMap;
+  renderMap=function(){
+    const host=$s('#conceptMap'),course=state.subject;
+    if(!host || !course)return;
+    function fallback(){
+      host.innerHTML='<div class="study-notes-panel"><h2>Ruta visual del curso</h2>'+
+        '<p>La librería gráfica no está disponible. Puedes navegar por los temas siguiendo sus conexiones.</p>'+
+        '<div class="review-grid">'+course.topics.map((t,i)=>
+          '<article class="review-card"><small>Etapa '+(i+1)+' de '+course.topics.length+'</small>'+
+          '<h3>'+escape(t.title)+'</h3><p>'+escape((t.summary||t.short||'').slice(0,150))+'</p>'+
+          '<button class="study-action" data-fallback-topic="'+t.n+'">Abrir tema →</button></article>'
+        ).join('')+'</div></div>';
+      host.querySelectorAll('[data-fallback-topic]').forEach(b=>b.onclick=()=>openTopic(Number(b.dataset.fallbackTopic)));
+    }
+    if(!window.vis?.Network || !window.vis?.DataSet){fallback();return;}
+    try{previousRenderMap();}catch(_){fallback();}
+  };
   const previousRenderHome=renderHome;
   renderHome=function(){previousRenderHome();ensureDashboard();};
   const previousSubject=openSubject;

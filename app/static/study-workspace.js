@@ -319,7 +319,9 @@
       const obj=JSON.parse(await file.text());
       if(!obj || obj.version!==1 || !obj.data || typeof obj.data!=='object')throw new Error('Formato no reconocido');
       if(!confirm('¿Restaurar esta copia? Reemplazará las notas y los repasos guardados en este dispositivo.'))return;
-      saved=sanitize(obj.data);store();refreshDashboard();
+      saved=sanitize(obj.data);
+      state.progress=Object.fromEntries(Object.entries(saved.completed).map(([k,v])=>[k,!!v]));
+      store();renderHome();refreshDashboard();
       alert('Copia de estudio restaurada.');if($s('#reviewView.active'))showReview();
     }catch(_){alert('No se pudo leer la copia de estudio.');}
     finally{fileInput.value='';}

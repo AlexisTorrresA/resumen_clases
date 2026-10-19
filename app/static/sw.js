@@ -6,6 +6,7 @@ self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET') return;
   const url=new URL(event.request.url);
   if(url.origin!==location.origin) return;
+  if(url.pathname.startsWith('/api/')) return; // Never cache personal notes or progress.
   event.respondWith(fetch(event.request).then(res=>{
     const copy=res.clone();
     caches.open(CACHE).then(c=>c.put(event.request,copy));

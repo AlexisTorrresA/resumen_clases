@@ -108,3 +108,9 @@ button:disabled{opacity:.6;cursor:not-allowed}
 .study-desk + .hero .heroStat{padding:13px;min-width:120px}
 .study-desk + .hero .heroStat b{font-size:30px}
 @media(max-width:900px){.study-desk + .hero{display:none}}
+
+.study-exam-next{margin-top:14px!important;font-size:13px;border-left:3px solid var(--accent);padding:8px 12px;border-radius:5px;background:var(--bg)}
+.study-exam-next b{color:var(--text)}
+.study-date{font-size:12px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;gap:5px}
+.study-date input{border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);font:inherit;font-size:14px;padding:9px;min-height:44px;max-width:175px}
+@media(max-width:600px){.study-date{width:100%}.study-date input{width:100%;max-width:100%}}

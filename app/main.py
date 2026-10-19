@@ -2,7 +2,7 @@ import json
 import os
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -64,6 +64,13 @@ def init_db():
                         done BOOLEAN NOT NULL DEFAULT TRUE,
                         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                         PRIMARY KEY(profile_id, subject_id, topic_number)
+                    )
+                """)
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS study_state (
+                        profile_id TEXT PRIMARY KEY,
+                        payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+                        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
                     )
                 """)
                 cur.execute("""
@@ -256,6 +263,50 @@ def stats(profile_id: str):
                 for r in cur.fetchall()
             ]
         return {"database": True, "attempts": attempts, "progress": progress}
+    finally:
+        conn.close()
+
+
+class StudyStatePayload(BaseModel):
+    profile_id: str
+    data: dict
+
+
+@app.get("/api/study-state/{profile_id}")
+def read_study_state(profile_id: str):
+    """Study notes and reviews for the same per-browser profile as exam progress."""
+    conn = get_conn()
+    if conn is None:
+        return {"database": False, "data": None}
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT payload FROM study_state WHERE profile_id=%s", (profile_id,))
+            item = cur.fetchone()
+        return {"database": True, "data": item[0] if item else None}
+    finally:
+        conn.close()
+
+
+@app.post("/api/study-state")
+def write_study_state(item: StudyStatePayload):
+    if not item.profile_id or len(item.profile_id) > 128:
+        raise HTTPException(status_code=422, detail="Invalid profile")
+    payload = json.dumps(item.data, ensure_ascii=False)
+    if len(payload.encode("utf-8")) > 1_500_000:
+        raise HTTPException(status_code=413, detail="Study state exceeds size limit")
+    conn = get_conn()
+    if conn is None:
+        return {"saved": False, "database": False}
+    try:
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO study_state(profile_id, payload)
+                    VALUES (%s, %s::jsonb)
+                    ON CONFLICT(profile_id)
+                    DO UPDATE SET payload=EXCLUDED.payload, updated_at=NOW()
+                """, (item.profile_id, payload))
+        return {"saved": True, "database": True}
     finally:
         conn.close()
 

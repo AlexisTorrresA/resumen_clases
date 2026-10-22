@@ -54,3 +54,11 @@ def test_home_loads_study_workspace():
     assert "study-workspace.js" in r.text
     assert "study-workspace.css" in r.text
     assert client.get("/static/study-workspace.js").status_code == 200
+
+
+def test_taa_study_cards_are_served():
+    res=client.get("/")
+    assert res.status_code==200
+    for asset in ("taa-fichas-data.js","taa-fichas-view.js","taa-fichas.css"):
+        assert asset in res.text
+        assert client.get("/static/"+asset).status_code==200

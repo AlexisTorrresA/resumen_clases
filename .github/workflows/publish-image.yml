@@ -20,6 +20,9 @@ jobs:
         run: |
           node --check app/static/study-workspace.js
           node --check app/static/mobile-menu.js
+          node --check app/static/taa-fichas-data.js
+          node --check app/static/taa-fichas-view.js
+          node tests/check_taa_fichas.cjs
       - name: Test
         run: PYTHONPATH=. pytest -q
       - uses: docker/setup-buildx-action@v3
